@@ -1,19 +1,16 @@
 import React, {useState} from "react";
 
 import Modal from "../../../shared/components/Modal";
-
 import {useUserContacts} from "../hooks";
 import UserContact from "./UserContact";
 import UserContactForm from "./UserContactForm";
-import UserContactService from "../services/UserContactsService";
-
-const CREATE = 'CREATE'
-const EDIT = 'EDIT'
+import UserContactsService from "../services/UserContactsService";
+import {CREATE_MODE, EDIT_MODE} from "../../../shared/constants/common";
 
 const UserContactsList = () => {
     const [isShowModal, setShowModal] = useState(false)
     const [editableContact, setEditableContact] = useState(null)
-    const [mode, setMode] = useState(CREATE) // add to constants
+    const [mode, setMode] = useState(CREATE_MODE)
     const {contacts, setContacts, isLoading, setIsLoading, error} = useUserContacts()
 
     if (error) {
@@ -21,25 +18,30 @@ const UserContactsList = () => {
             <div>Error: {error.message}</div>
         )
     }
-
     if (isLoading) {
         return (
             <div>isLoading</div>
         )
     }
+    if (!contacts.length) {
+        return <div>list is empty</div>
+    }
 
-    const handleSubmit = async (contactData) => { // handle errors from UserContactService
+    const handleSubmit = async (contactData) => { // handle errors from UserContactsService
         try {
             setIsLoading(true)
             let contact
-            if (mode === CREATE) {
-                contact = await UserContactService.createOne(contactData)
+            if (mode === CREATE_MODE) {
+                contact = await UserContactsService.createOne(contactData)
                 setContacts([...contacts, contact])
-            } else if (mode === EDIT) {
-                contact = await UserContactService.updateOneById(contactData)
+            } else if (mode === EDIT_MODE) {
+                const {id, ...updates} = contactData
+                contact = await UserContactsService.updateOneById(id, updates)
+
                 const index = contacts.findIndex(c => c.id === contact.id)
-                const newContacts = contacts.splice(index, 1, contact)
-                console.log(newContacts); // prevent mutation "contacts"
+                const newContacts = [...contacts]
+                newContacts.splice(index, 1, contact)
+                setContacts(newContacts)
             }
             setShowModal(false)
         } finally {
@@ -49,14 +51,14 @@ const UserContactsList = () => {
 
     const handleClickEdit = (contact) => {
         setEditableContact(contact)
-        setMode(EDIT)
+        setMode(EDIT_MODE)
         setShowModal(true)
     }
 
-    const handleClickDelete = async (contactId) => { // handle errors from UserContactService
+    const handleClickDelete = async (contactId) => { // handle errors from UserContactsService
         try {
             setIsLoading(true)
-            await UserContactService.deleteOneById(contactId)
+            await UserContactsService.deleteOneById(contactId)
             setContacts(contacts.filter(contact => contact.id !== contactId))
         } finally {
             setIsLoading(false)

@@ -25,8 +25,8 @@ import {useState, useEffect} from 'react'
 //     return [response, error, isLoading];
 // };
 
-const useFetch = (apiCallback) => {
-    const [response, setResponse] = useState(null);
+const useFetch = (request, defaultState) => {
+    const [response, setResponse] = useState(defaultState);
     const [error, setError] = useState(null);
     const [isLoading, setIsLoading] = useState(false);
 
@@ -34,7 +34,7 @@ const useFetch = (apiCallback) => {
         const fetchData = async () => {
             setIsLoading(true);
             try {
-                const response = await apiCallback()
+                const response = await request()
                 setResponse(response);
             } catch (error) {
                 setError(error);
@@ -44,7 +44,7 @@ const useFetch = (apiCallback) => {
         };
 
         fetchData();
-    }, [apiCallback]);
+    }, [request]);
 
     return {response, error, isLoading, setIsLoading};
 };
