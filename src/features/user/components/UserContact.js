@@ -1,18 +1,18 @@
 import React from 'react'
 
 const UserContact = ({contact, onClickEdit, onClickDelete}) => {
-    const {firstName, lastName, age, email} = contact
+    const {name, phone, email} = contact
 
     return (
         <div style={{display: 'flex', justifyContent: 'space-between'}}>
             <span>
-                Name: {firstName} {lastName}
-            </span>
-            <span>
-                Age: {age}
+                Name: {name}
             </span>
             <span>
                 Email: {email}
+            </span>
+            <span>
+                Phone: {phone}
             </span>
             <span onClick={() => onClickEdit(contact)}>
                 edit

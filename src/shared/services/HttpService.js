@@ -1,73 +1,70 @@
-import ConfigService from "./ConfigService";
+import ConfigService from './ConfigService'
+import ResponseHandler from '../helpers/ResponseHandler'
 
-class HttpService {
+class HttpRequest {
+  constructor(config) {
+    this.config = config
+  }
 
-    constructor() {
-        this.config = new ConfigService()
+  #getUrl = (url) => this.config.baseUrl + url
+
+  #getHeaders = (headers = {}) => ({
+    'Content-Type': 'application/json',
+    ...headers
+  })
+
+  #getOptions = (options = {}) => {
+    const result = {
+      ...options,
+      method: options.method ? options.method : 'GET',
+      headers: this.#getHeaders(options.headers)
+    }
+    if (options.body) {
+      result.body = JSON.stringify(options.body)
     }
 
-    static parseJson = async (response) => {
-        try {
-            return response.json()
-        } catch (e) {
-            throw e // add custom error for passing the raw error to it
-        }
-    }
+    return result
+  }
 
-    static handleResponseByCode = (response) => {
-        // console.log(response, 'raw response');
-        // check different status and throw different errors for them
-        return response
-    }
-
-    static handleResponse = async (response, callback) => { // create class response handler
-        try {
-            const rawResponse = this.handleResponseByCode(response)
-            const res = await this.parseJson(rawResponse)
-
-            if (callback) {
-                return callback(res)
-            }
-            return res
-        } catch (e) {
-            throw e // add custom error
-        }
-    }
-
-    httpGet = async (url, options) => {
-        const response = await fetch(url, {
-            ...options
-        })
-
-        return HttpService.handleResponse(response)
-    }
-
-    httpPost = async (url, options) => {
-        const response = await fetch(url, {
-            ...options,
-            method: 'POST'
-        })
-
-        return HttpService.handleResponse(response)
-    }
-
-    httpPut = async (url, options) => {
-        const response = await fetch(url, {
-            ...options,
-            method: 'PUT'
-        })
-
-        return HttpService.handleResponse(response)
-    }
-
-    httpDelete = async (url, options) => {
-        const response = await fetch(url, {
-            ...options,
-            method: 'DELETE'
-        })
-
-        return HttpService.handleResponse(response)
-    }
+  request = async (url, options) => {
+    const response = await fetch(
+      this.#getUrl(url),
+      this.#getOptions(options)
+    )
+    return ResponseHandler.handle(response)
+  }
 }
 
-export default HttpService
+let Singleton = null
+class HttpService extends HttpRequest {
+  constructor() {
+    if (Singleton) {
+      return Singleton
+    } else {
+      super({baseUrl: ConfigService.env.baseApiUrl})
+      Singleton = this
+    }
+  }
+
+  get = async (url, options = {}) => {
+    return this.request(url, {...options, method: 'GET'})
+  }
+
+  post = async (url, payload, options = {}) => {
+    return this.request(url, {...options, method: 'POST', body: payload})
+  }
+
+  put = async (url, payload, options = {}) => {
+    return this.request(url, {...options, method: 'PUT', body: payload})
+  }
+
+  patch = async (url, payload, options = {}) => {
+    return this.request(url, {...options, method: 'PATCH', body: payload})
+  }
+
+  delete = async (url, payload, options = {}) => {
+    return this.request(url, {...options, method: 'DELETE', body: payload})
+  }
+}
+
+export default new HttpService()

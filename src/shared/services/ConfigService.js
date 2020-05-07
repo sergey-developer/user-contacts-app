@@ -1,12 +1,16 @@
 import EnvService from "./EnvService";
 
-const APP_PREFIX = 'USER_CONTACTS_APP--'
-
+let Singleton = null
 class ConfigService {
     constructor() {
-        this.env = new EnvService()
-        this.appPrefix = APP_PREFIX
+        if (Singleton) {
+            return Singleton
+        } else {
+            this.env = new EnvService('development.env')
+            this.appPrefix = 'USER_CONTACTS_APP--'
+            Singleton = this
+        }
     }
 }
-// make singleton
-export default ConfigService
+
+export default new ConfigService()

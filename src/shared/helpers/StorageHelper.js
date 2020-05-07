@@ -1,9 +1,8 @@
 import BrowserStorageError from '../errors/BrowserStorageError'
 
 export const LOCAL_STORAGE = 'localStorage'
-export const SESSION_STORAGE = 'sessionStorage'
 
-const BrowserStorageService = (function () {
+const StorageHelper = (function () {
     let storage
 
     function getStorageByName(storageName) {
@@ -13,7 +12,7 @@ const BrowserStorageService = (function () {
         return window[storageName]
     }
 
-    return class StorageService {
+    return class StorageHelper {
         constructor(storageName) {
             storage = getStorageByName(storageName)
             this.name = storageName
@@ -52,4 +51,4 @@ const BrowserStorageService = (function () {
     }
 })()
 
-export default BrowserStorageService
+export const LocalStorage = new StorageHelper(LOCAL_STORAGE)

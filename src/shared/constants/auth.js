@@ -1,1 +1,0 @@
-export const STORAGE_AUTH_TOKEN_KEY = 'ACCESS_TOKEN'

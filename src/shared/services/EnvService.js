@@ -1,9 +1,14 @@
-const BASE_URL = 'http://localhost:3000'
+const BASE_URL = 'https://jsonplaceholder.typicode.com'
 
+let Singleton = null
 class EnvService {
-    constructor() {
-        this.baseApiUrl = BASE_URL // read from env
-        // this.baseBucketUrl = 'https://bucket.firebase.com/'
+    constructor(filePath) { // read dot env by filepath
+        if (Singleton) {
+            return Singleton
+        } else {
+            this.baseApiUrl = BASE_URL // read from env
+            Singleton = this
+        }
     }
 }
 

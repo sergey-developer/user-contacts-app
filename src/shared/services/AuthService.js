@@ -1,54 +1,60 @@
-import ApiService from "./ApiService";
-import BrowserStorageService, {LOCAL_STORAGE} from "./BrowserStorageService";
-import {STORAGE_AUTH_TOKEN_KEY} from "../constants/auth";
-import BrowserStorageError from "../errors/BrowserStorageError";
-import AuthError from "../errors/AuthError";
+import HttpService from './HttpService'
+import ConfigService from './ConfigService'
+import {LocalStorage} from '../helpers/StorageHelper'
+import BrowserStorageError from '../errors/BrowserStorageError'
+import AuthError from '../errors/AuthError'
 
-const storage = new BrowserStorageService(LOCAL_STORAGE)
-
+export const STORAGE_AUTH_TOKEN_KEY = ConfigService.appPrefix + 'ACCESS_TOKEN'
+let Singleton = null
 class AuthService {
-    constructor() {
-        this.api = new ApiService()
-        this.STORAGE_TOKEN_KEY = this.api.config.appPrefix + STORAGE_AUTH_TOKEN_KEY
+  constructor() {
+    if (Singleton) {
+      return Singleton
+    } else {
+      this.api = HttpService
+      Singleton = this
     }
+  }
 
-    signIn = async (email, password) => {
-        try {
-            const token = 'access token'
-            this.saveToken(token)
-        } catch (e) {
-            throw e // add custom error
-        }
+  signIn = async (email, password) => {
+    try {
+      const token = 'access token'
+      this.saveToken(token)
+    } catch (e) {
+      throw e // add custom error
     }
+  }
 
-    signOut = async () => {
-        this.removeToken()
+  signOut = async () => {
+    this.removeToken()
+  }
+
+  saveToken = (token) => {
+    try {
+      LocalStorage.set(STORAGE_AUTH_TOKEN_KEY, token)
+    } catch (error) {
+      if (error.name === BrowserStorageError.name) {
+        throw error
+      }
+      throw new AuthError('Can`t sign in. Please, try again.')
     }
+  }
 
-    saveToken = (token) => {
-        try {
-            storage.set(this.STORAGE_TOKEN_KEY, token)
-        } catch (error) {
-            if (error.name === BrowserStorageError.name) {
-                throw error
-            }
-            throw new AuthError('Can`t sign in. Please, try again.')
-        }
-    }
+  removeToken = () => {
+    LocalStorage.remove(STORAGE_AUTH_TOKEN_KEY)
+  }
 
-    removeToken = () => {
-        storage.remove(this.STORAGE_TOKEN_KEY)
-    }
+  getToken = () => {
+    return LocalStorage.get(STORAGE_AUTH_TOKEN_KEY)
+  }
 
-    getToken = () => {
-        return storage.get(this.STORAGE_TOKEN_KEY)
-    }
+  isAuthenticated = () => {
+    return !!this.getToken()
+  }
 
-    isAuthenticated = () => {
-        return !!this.getToken()
-    }
-
+  getHeaders = () => ({
+    Authorization: this.getToken()
+  })
 }
 
-const Instance = new AuthService()
-export default Instance
+export default new AuthService()

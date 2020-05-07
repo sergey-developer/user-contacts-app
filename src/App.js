@@ -1,9 +1,9 @@
 import React, {lazy, Suspense} from 'react';
-import {BrowserRouter as Router, Switch, Route} from "react-router-dom";
+import {BrowserRouter as Router, Switch, Route, Redirect} from "react-router-dom";
 
 import ErrorBoundary from "./shared/components/ErrorBoundary";
 import PrivateRoute from "./shared/components/PrivateRoute";
-import NotFoundPage from "./shared/components/NotFoundPage";
+import NotFound from "./shared/components/NotFound";
 
 const SignInPage = lazy(() => import("./pages/SignInPage"));
 const UserContactsListPage = lazy(() => import("./pages/UserContactsListPage"));
@@ -15,9 +15,10 @@ function App() {
                 <Router>
                     <Suspense fallback={<div>Loading...</div>}>
                         <Switch>
+                            <Redirect exact from="/" to="/contacts"/>
                             <Route path="/signin" exact component={SignInPage}/>
                             <PrivateRoute path="/contacts" exact component={UserContactsListPage}/>
-                            <Route component={NotFoundPage}/>
+                            <Route component={NotFound}/>
                         </Switch>
                     </Suspense>
                 </Router>

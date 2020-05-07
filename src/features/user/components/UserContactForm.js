@@ -1,14 +1,15 @@
 import React, {useState} from "react";
 
+import {EDIT_MODE} from "../../../shared/constants/common";
+
 const defaultFormValues = {
-    firstName: '',
-    lastName: '',
+    name: '',
     email: '',
-    age: ''
+    phone: ''
 }
 
 const initState = (mode, initialValues) => {
-    return mode === 'EDIT'
+    return mode === EDIT_MODE
         ? initialValues
         : defaultFormValues
 }
@@ -36,18 +37,10 @@ const UserContactForm = ({onSubmit, mode, initialValues}) => {
             <input
                 type="text"
                 required
-                placeholder='First name'
-                name="firstName"
+                placeholder='Name'
+                name="name"
                 onChange={handleChange}
-                value={values.firstName}
-            />
-            <input
-                type="text"
-                required
-                placeholder='Last name'
-                name="lastName"
-                onChange={handleChange}
-                value={values.lastName}
+                value={values.name}
             />
             <input
                 type="text"
@@ -59,10 +52,10 @@ const UserContactForm = ({onSubmit, mode, initialValues}) => {
             />
             <input
                 type="text"
-                placeholder='Age'
-                name="age"
+                placeholder='Phone'
+                name="phone"
                 onChange={handleChange}
-                value={values.age}
+                value={values.phone}
             />
             <button type="submit">
                 Add

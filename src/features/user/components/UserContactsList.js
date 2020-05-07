@@ -28,9 +28,10 @@ const UserContactsList = () => {
     }
 
     const handleSubmit = async (contactData) => { // handle errors from UserContactsService
+        setIsLoading(true)
+        let contact
+
         try {
-            setIsLoading(true)
-            let contact
             if (mode === CREATE_MODE) {
                 contact = await UserContactsService.createOne(contactData)
                 setContacts([...contacts, contact])
@@ -47,6 +48,11 @@ const UserContactsList = () => {
         } finally {
             setIsLoading(false)
         }
+    }
+
+    const handleClickAdd = () => {
+        setMode(CREATE_MODE)
+        setShowModal(true)
     }
 
     const handleClickEdit = (contact) => {
@@ -66,7 +72,7 @@ const UserContactsList = () => {
     }
 
     return (
-        <div style={{width: '50%', margin: '0 auto'}}>
+        <div style={{width: '70%', margin: '0 auto'}}>
             <Modal isShow={isShowModal} setShow={setShowModal}>
                 <UserContactForm
                     mode={mode}
@@ -79,7 +85,7 @@ const UserContactsList = () => {
                     type="text"
                     placeholder="search..."
                 />
-                <button type="button" onClick={() => setShowModal(true)}>
+                <button type="button" onClick={handleClickAdd}>
                     Add new
                 </button>
             </div>
