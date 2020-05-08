@@ -1,4 +1,4 @@
-import HttpService from './HttpService'
+import HttpService from './HttpService/HttpService'
 import ConfigService from './ConfigService'
 import {LocalStorage} from '../helpers/StorageHelper'
 import BrowserStorageError from '../errors/BrowserStorageError'

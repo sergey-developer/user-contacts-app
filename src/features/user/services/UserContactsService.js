@@ -1,12 +1,4 @@
-// handleResponse = async (res, callback) => {
-//     const response = await super.handleResponse(res) // it does not work, handle it
-//     console.log(response, 'response');
-//     if (callback) {
-//         return callback(response)
-//     }
-//     return response
-// }
-import HttpService from '../../../shared/services/HttpService'
+import HttpService from '../../../shared/services/HttpService/HttpService'
 import AuthService from '../../../shared/services/AuthService'
 import {
   CREATE_USER_CONTACT,
@@ -16,7 +8,6 @@ import {
 } from '../../../shared/constants/api'
 
 let Singleton = null
-
 class UserContactsService {
   constructor() {
     if (Singleton) {
@@ -56,7 +47,7 @@ class UserContactsService {
   getAll = async () => {
     try {
       return this.api.get(GET_USER_CONTACTS, {
-        headers: AuthService.getHeaders() // for example
+        headers: AuthService.getHeaders()
       })
     } catch (e) {
       throw e // add custom error

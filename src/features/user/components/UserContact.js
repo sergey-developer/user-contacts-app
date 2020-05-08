@@ -1,5 +1,7 @@
 import React from 'react'
 
+import Icon from '../../../shared/components/Icons'
+
 const UserContact = ({contact, onClickEdit, onClickDelete}) => {
     const {name, phone, email} = contact
 
@@ -15,10 +17,10 @@ const UserContact = ({contact, onClickEdit, onClickDelete}) => {
                 Phone: {phone}
             </span>
             <span onClick={() => onClickEdit(contact)}>
-                edit
+                <Icon name='edit'/>
             </span>
             <span onClick={() => onClickDelete(contact.id)}>
-                X
+                <Icon name='cancel'/>
             </span>
         </div>
     )

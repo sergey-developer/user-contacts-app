@@ -36,10 +36,11 @@ add
  lazy +,
  suspense +,
  prop types,
+ implement useAuth,
  optimization scrolling,
  optimization re-render,
- save token in local storage,
- create reusable modal logic
+ save token in local storage +,
+ create reusable modal logic +
  create reusable form logic
  add prefix to localstorage key +
  add constants for routing

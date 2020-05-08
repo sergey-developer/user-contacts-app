@@ -1,6 +1,7 @@
 import React, {useState} from "react";
 
 import AuthService from "../shared/services/AuthService";
+import Spinner from '../shared/components/Spinner'
 
 const initialFormValues = {
     email: '',
@@ -10,7 +11,7 @@ const initialFormValues = {
 const SignInPage = ({history}) => {
     const [values, setValues] = useState(initialFormValues)
     const [error, setError] = useState(null)
-    const [isLoading, setIsLoading] = useState(false)
+    const [isLoading, setLoading] = useState(false)
 
     const handleChange = (event) => {
         const { name, value } = event.target;
@@ -19,21 +20,19 @@ const SignInPage = ({history}) => {
 
     const handleSubmit = async (event) => {
         event.preventDefault()
-        setIsLoading(true)
+        setLoading(true)
         try {
             await AuthService.signIn(values.email, values.password)
             setValues(initialFormValues)
             history.push('/contacts')
         } catch (error) {
             setError(error)
-            setIsLoading(false)
+            setLoading(false)
         }
     }
 
     if (isLoading) {
-        return(
-            <div>Loading</div>
-        )
+        return <Spinner/>
     }
 
     return(

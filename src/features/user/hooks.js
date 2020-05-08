@@ -1,15 +1,27 @@
-import {useEffect, useState} from 'react'
+import {useEffect} from 'react'
 
-import useFetch from "../../shared/hooks/useFetch";
+import useRequest from '../../shared/hooks/useRequest'
 import UserContactsService from './services/UserContactsService'
 
 export const useUserContacts = () => {
-    const [contacts, setContacts] = useState([])
-    const {response, error, isLoading, setIsLoading} = useFetch(UserContactsService.getAll, [])
+  const {
+    request: getContacts,
+    response: contacts,
+    isLoading,
+    error,
+    setResponse: setContacts,
+    setLoading
+  } = useRequest(UserContactsService.getAll, [])
 
-    useEffect(() => {
-        setContacts(response)
-    }, [response])
+  useEffect(() => {
+    getContacts()
+  }, [getContacts])
 
-    return {contacts, setContacts, isLoading, setIsLoading, error}
+  return {
+    contacts,
+    isLoading,
+    error,
+    setContacts,
+    setLoading
+  }
 }

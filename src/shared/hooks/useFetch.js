@@ -1,52 +1,24 @@
-import {useState, useEffect} from 'react'
+// import React, {useEffect, useState} from 'react'
 
-// const useFetch = (url, options) => {
-//     const [response, setResponse] = useState(null);
-//     const [error, setError] = useState(null);
-//     const [isLoading, setIsLoading] = useState(false);
+// const useFetch = (fn, defaultState) => {
+//   const [data, setData] = useState(defaultState);
+//   const [loading, setLoading] = useState(true);
+//   const [error, setError] = useState(null);
+//   async function fetchUrl() {
+//     try {
+//       const response = await fn();
+//       setData(response);
+//     } catch (e) {
+//       setError(e)
+//     } finally {
+//       setLoading(false);
+//     }
+//   }
 //
-//     useEffect(() => {
-//         const fetchData = async () => {
-//             setIsLoading(true);
-//             try {
-//                 const res = await fetch(url, options);
-//                 const json = await res.json();
-//                 setResponse(json);
-//             } catch (error) {
-//                 setError(error);
-//             } finally {
-//                 setIsLoading(false)
-//             }
-//         };
+//   useEffect(() => {
+//     fetchUrl();
+//   }, []);
+//   return {data, loading, error, setData, setLoading};
+// }
 //
-//         fetchData();
-//     }, [url, options]);
-//
-//     return [response, error, isLoading];
-// };
-
-const useFetch = (request, defaultState) => {
-    const [response, setResponse] = useState(defaultState);
-    const [error, setError] = useState(null);
-    const [isLoading, setIsLoading] = useState(false);
-
-    useEffect(() => {
-        const fetchData = async () => {
-            setIsLoading(true);
-            try {
-                const response = await request()
-                setResponse(response);
-            } catch (error) {
-                setError(error);
-            } finally {
-                setIsLoading(false)
-            }
-        };
-
-        fetchData();
-    }, [request]);
-
-    return {response, error, isLoading, setIsLoading};
-};
-
-export default useFetch
+// export default useFetch
