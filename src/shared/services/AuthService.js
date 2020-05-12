@@ -4,7 +4,7 @@ import {LocalStorage} from '../helpers/StorageHelper'
 import BrowserStorageError from '../errors/BrowserStorageError'
 import AuthError from '../errors/AuthError'
 
-export const STORAGE_AUTH_TOKEN_KEY = ConfigService.appPrefix + 'ACCESS_TOKEN'
+export const STORAGE_AUTH_USER_KEY = ConfigService.appPrefix + 'USER'
 let Singleton = null
 class AuthService {
   constructor() {
@@ -18,43 +18,54 @@ class AuthService {
 
   signIn = async (email, password) => {
     try {
-      const token = 'access token'
-      this.saveToken(token)
+      const user = {
+        id: 1,
+        name: 'John Doe',
+        email,
+        token: 'access token'
+      }
+      this.saveUserInStorage(user)
+
+      return user
     } catch (e) {
       throw e // add custom error
     }
   }
 
   signOut = async () => {
-    this.removeToken()
+    this.removeUserFromStorage()
   }
 
-  saveToken = (token) => {
+  saveUserInStorage = (user) => {
     try {
-      LocalStorage.set(STORAGE_AUTH_TOKEN_KEY, token)
+      LocalStorage.set(
+        STORAGE_AUTH_USER_KEY,
+        JSON.stringify(user)
+      )
     } catch (error) {
       if (error.name === BrowserStorageError.name) {
         throw error
-      }
+      } // ?
       throw new AuthError('Can`t sign in. Please, try again.')
     }
   }
 
-  removeToken = () => {
-    LocalStorage.remove(STORAGE_AUTH_TOKEN_KEY)
+  removeUserFromStorage = () => {
+    LocalStorage.remove(STORAGE_AUTH_USER_KEY)
   }
 
-  getToken = () => {
-    return LocalStorage.get(STORAGE_AUTH_TOKEN_KEY)
+  getUserFromStorage = () => {
+    const user = LocalStorage.get(STORAGE_AUTH_USER_KEY)
+    return JSON.parse(user)
   }
 
-  isAuthenticated = () => {
-    return !!this.getToken()
-  }
+  getHeaders = () => {
+    const {token} = this.getUserFromStorage()
 
-  getHeaders = () => ({
-    Authorization: this.getToken()
-  })
+    return {
+      Authorization: token
+    }
+  }
 }
 
 export default new AuthService()

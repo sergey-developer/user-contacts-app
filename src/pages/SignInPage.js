@@ -1,7 +1,7 @@
-import React, {useState} from "react";
+import React, {useState} from 'react'
 
-import AuthService from "../shared/services/AuthService";
 import Spinner from '../shared/components/Spinner'
+import {useAuth} from '../shared/context/AuthContext'
 
 const initialFormValues = {
     email: '',
@@ -9,6 +9,7 @@ const initialFormValues = {
 }
 
 const SignInPage = ({history}) => {
+    const Auth = useAuth()
     const [values, setValues] = useState(initialFormValues)
     const [error, setError] = useState(null)
     const [isLoading, setLoading] = useState(false)
@@ -22,7 +23,7 @@ const SignInPage = ({history}) => {
         event.preventDefault()
         setLoading(true)
         try {
-            await AuthService.signIn(values.email, values.password)
+            await Auth.login(values.email, values.password)
             setValues(initialFormValues)
             history.push('/contacts')
         } catch (error) {
