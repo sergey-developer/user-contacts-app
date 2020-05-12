@@ -22,7 +22,7 @@ class UserContactsService {
     try {
       return this.api.post(CREATE_USER_CONTACT, contactData)
     } catch (e) {
-      throw e // add custom error
+      throw e
     }
   }
 
@@ -31,7 +31,7 @@ class UserContactsService {
     try {
       return this.api.patch(url, updates)
     } catch (e) {
-      throw e // add custom error
+      throw e
     }
   }
 
@@ -40,7 +40,7 @@ class UserContactsService {
     try {
       return this.api.delete(url)
     } catch (e) {
-      throw e // add custom error
+      throw e
     }
   }
 
@@ -50,7 +50,7 @@ class UserContactsService {
         headers: AuthService.getHeaders()
       })
     } catch (e) {
-      throw e // add custom error
+      throw e
     }
   }
 }
